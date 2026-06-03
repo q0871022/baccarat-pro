@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>百家樂分析系統</title>
+<style>
+body{background:#111;color:#fff;font-family:Arial,sans-serif;margin:0;padding:15px}
+.card{background:#1c1c1c;border-radius:12px;padding:15px;margin-bottom:15px}
+h2{text-align:center}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:#222;padding:10px;border-radius:8px;text-align:center}
+.buttons{display:flex;gap:10px}
+button{flex:1;padding:15px;border:none;border-radius:10px;color:white;font-size:18px}
+.banker{background:#d32f2f}.player{background:#1976d2}.tie{background:#388e3c}
+.undo{background:#777}.clear{background:#444}
+#roadmap{display:flex;flex-wrap:wrap;gap:5px}
+.circle{width:35px;height:35px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold}
+.B{background:#d32f2f}.P{background:#1976d2}.T{background:#388e3c}
+input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:none}
+</style>
+</head>
+<body>
+<h2>🎰 百家樂分析系統</h2>
+<div class="card">
+<h3>資金管理</h3>
+<input id="bankroll" type="number" value="2500">
+</div>
+<div class="card">
+<div class="buttons">
+<button class="banker" onclick="addResult('B')">莊</button>
+<button class="player" onclick="addResult('P')">閒</button>
+<button class="tie" onclick="addResult('T')">和</button>
+</div><br>
+<div class="buttons">
+<button class="undo" onclick="undo()">撤銷</button>
+<button class="clear" onclick="clearAll()">清空</button>
+</div>
+</div>
+<div class="card"><h3>統計資料</h3>
+<div class="stats">
+<div class="stat">總局<br><span id="total">0</span></div>
+<div class="stat">莊<br><span id="bankerCount">0</span></div>
+<div class="stat">閒<br><span id="playerCount">0</span></div>
+<div class="stat">和<br><span id="tieCount">0</span></div>
+</div></div>
+<div class="card"><h3>路單</h3><div id="roadmap"></div></div>
+<div class="card"><h3>最近20局</h3><div id="history"></div></div>
+<div class="card"><h3>路型分析</h3><div id="analysis">等待資料...</div></div>
+<script>
+let results=[];
+function addResult(t){results.push(t);render();}
+function undo(){results.pop();render();}
+function clearAll(){results=[];render();}
+function render(){
+let b=results.filter(x=>x==='B').length;
+let p=results.filter(x=>x==='P').length;
+let t=results.filter(x=>x==='T').length;
+total.innerText=results.length; bankerCount.innerText=b; playerCount.innerText=p; tieCount.innerText=t;
+roadmap.innerHTML='';
+results.forEach(r=>{let d=document.createElement('div'); d.className='circle '+r; d.innerText=r; roadmap.appendChild(d);});
+history.innerText=results.slice(-20).join(' ');
+analysis.innerText=results.length<5?'資料不足':((b>=p?'偏莊趨勢':'偏閒趨勢')+' / 最近連續結果請自行觀察');
+}
+render();
+</script>
+</body></html>
